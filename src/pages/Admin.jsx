@@ -88,6 +88,8 @@ const VARIANTS = [
   'Non-Holo',
   'Holo Rare',
   'Full Art Special',
+  'Double Rare (Holo Foil)',
+  'Uncommon',
 ];
 
 const EMPTY_FORM = {
