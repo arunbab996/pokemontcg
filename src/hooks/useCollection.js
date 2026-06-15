@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { supabase } from '../lib/supabase';
 import { SEED_CARDS } from '../data/seed';
 
-const STORAGE_KEY = 'binder_v6';
 const PTCG_BASE = 'https://api.pokemontcg.io/v2/cards';
 
 async function fetchCardImage(card) {
@@ -20,149 +20,140 @@ async function fetchCardImage(card) {
   }
 }
 
-function loadFromStorage() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return null;
-}
+async function fetchMissingImages(cards, setBinder, setFetchingIds) {
+  const missing = cards.filter(c => !c.image_url);
+  if (missing.length === 0) return;
 
-function saveToStorage(binder) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(binder));
-  } catch {}
+  setFetchingIds(new Set(missing.map(c => c.id)));
+
+  missing.forEach(async (card) => {
+    const url = await fetchCardImage(card);
+    if (url) {
+      await supabase.from('cards').update({ image_url: url }).eq('id', card.id);
+      setBinder(prev => ({
+        ...prev,
+        cards: prev.cards.map(c => c.id === card.id ? { ...c, image_url: url } : c),
+      }));
+    }
+    setFetchingIds(prev => {
+      const s = new Set(prev);
+      s.delete(card.id);
+      return s;
+    });
+  });
 }
 
 export function useCollection() {
-  const [binder, setBinder] = useState(() => {
-    const stored = loadFromStorage();
-    if (stored) return stored;
-    return { cards: SEED_CARDS, last_updated: new Date().toISOString() };
-  });
+  const [binder, setBinder] = useState({ cards: [], last_updated: new Date().toISOString() });
   const [fetchingIds, setFetchingIds] = useState(new Set());
-  const fetchRan = useRef(false);
+  const [loading, setLoading] = useState(true);
+  const initRan = useRef(false);
 
-  const persistBinder = useCallback((next) => {
-    setBinder(next);
-    saveToStorage(next);
-  }, []);
-
-  // On mount: fetch missing images, one at a time so state updates are visible immediately
   useEffect(() => {
-    if (fetchRan.current) return;
-    fetchRan.current = true;
+    if (initRan.current) return;
+    initRan.current = true;
 
-    const stored = loadFromStorage();
-    const cards = stored ? stored.cards : SEED_CARDS;
-    const missing = cards.filter((c) => !c.image_url);
-    if (missing.length === 0) return;
+    async function init() {
+      const { data, error } = await supabase
+        .from('cards')
+        .select('*')
+        .order('added_at', { ascending: true });
 
-    setFetchingIds(new Set(missing.map((c) => c.id)));
+      if (error) {
+        console.error('Supabase error:', error);
+        setLoading(false);
+        return;
+      }
 
-    missing.forEach(async (card) => {
-      const url = await fetchCardImage(card);
-      setBinder((prev) => {
-        const updated = {
-          ...prev,
-          cards: prev.cards.map((c) => (c.id === card.id ? { ...c, image_url: url } : c)),
-          last_updated: new Date().toISOString(),
-        };
-        saveToStorage(updated);
-        return updated;
-      });
-      setFetchingIds((prev) => {
-        const s = new Set(prev);
-        s.delete(card.id);
-        return s;
-      });
-    });
+      if (data.length === 0) {
+        // First time — seed the database
+        const { error: insertError } = await supabase.from('cards').insert(SEED_CARDS);
+        if (!insertError) {
+          setBinder({ cards: SEED_CARDS, last_updated: new Date().toISOString() });
+          fetchMissingImages(SEED_CARDS, setBinder, setFetchingIds);
+        }
+      } else {
+        setBinder({ cards: data, last_updated: data[data.length - 1]?.added_at || new Date().toISOString() });
+        fetchMissingImages(data, setBinder, setFetchingIds);
+      }
+
+      setLoading(false);
+    }
+
+    init();
   }, []);
 
-  const addCard = useCallback(
-    async (cardData) => {
-      const id = cardData.id || `${cardData.set_code}-${cardData.card_number}-${Date.now()}`;
-      const newCard = {
-        ...cardData,
-        id,
-        image_url: cardData.image_url || '',
-        added_at: new Date().toISOString(),
-      };
+  const addCard = useCallback(async (cardData) => {
+    const id = cardData.id || `${cardData.set_code}-${cardData.card_number}-${Date.now()}`;
+    const newCard = {
+      ...cardData,
+      id,
+      image_url: cardData.image_url || '',
+      added_at: new Date().toISOString(),
+    };
 
-      const next = {
-        cards: [...binder.cards, newCard],
-        last_updated: new Date().toISOString(),
-      };
-      persistBinder(next);
+    const { error } = await supabase.from('cards').insert(newCard);
+    if (error) { console.error(error); return; }
 
-      if (!newCard.image_url) {
-        setFetchingIds((prev) => new Set([...prev, id]));
-        const url = await fetchCardImage(newCard);
-        setBinder((prev) => {
-          const updated = {
-            ...prev,
-            cards: prev.cards.map((c) => (c.id === id ? { ...c, image_url: url } : c)),
-          };
-          saveToStorage(updated);
-          return updated;
-        });
-        setFetchingIds((prev) => {
-          const s = new Set(prev);
-          s.delete(id);
-          return s;
-        });
+    setBinder(prev => ({
+      ...prev,
+      cards: [...prev.cards, newCard],
+      last_updated: new Date().toISOString(),
+    }));
+
+    if (!newCard.image_url) {
+      setFetchingIds(prev => new Set([...prev, id]));
+      const url = await fetchCardImage(newCard);
+      if (url) {
+        await supabase.from('cards').update({ image_url: url }).eq('id', id);
+        setBinder(prev => ({
+          ...prev,
+          cards: prev.cards.map(c => c.id === id ? { ...c, image_url: url } : c),
+        }));
       }
-    },
-    [binder, persistBinder]
-  );
+      setFetchingIds(prev => { const s = new Set(prev); s.delete(id); return s; });
+    }
+  }, []);
 
-  const updateCard = useCallback(
-    async (id, cardData) => {
-      const shouldRefetch = !cardData.image_url;
-      const updated = {
-        ...cardData,
-        id,
-        image_url: cardData.image_url || '',
-        added_at: cardData.added_at || new Date().toISOString(),
-      };
-      const next = {
-        ...binder,
-        cards: binder.cards.map((c) => (c.id === id ? updated : c)),
-        last_updated: new Date().toISOString(),
-      };
-      persistBinder(next);
+  const updateCard = useCallback(async (id, cardData) => {
+    const updated = {
+      ...cardData,
+      id,
+      image_url: cardData.image_url || '',
+      added_at: cardData.added_at || new Date().toISOString(),
+    };
 
-      if (shouldRefetch) {
-        setFetchingIds((prev) => new Set([...prev, id]));
-        const url = await fetchCardImage(updated);
-        setBinder((prev) => {
-          const u = {
-            ...prev,
-            cards: prev.cards.map((c) => (c.id === id ? { ...c, image_url: url } : c)),
-          };
-          saveToStorage(u);
-          return u;
-        });
-        setFetchingIds((prev) => {
-          const s = new Set(prev);
-          s.delete(id);
-          return s;
-        });
+    const { error } = await supabase.from('cards').update(updated).eq('id', id);
+    if (error) { console.error(error); return; }
+
+    setBinder(prev => ({
+      ...prev,
+      cards: prev.cards.map(c => c.id === id ? updated : c),
+      last_updated: new Date().toISOString(),
+    }));
+
+    if (!updated.image_url) {
+      setFetchingIds(prev => new Set([...prev, id]));
+      const url = await fetchCardImage(updated);
+      if (url) {
+        await supabase.from('cards').update({ image_url: url }).eq('id', id);
+        setBinder(prev => ({
+          ...prev,
+          cards: prev.cards.map(c => c.id === id ? { ...c, image_url: url } : c),
+        }));
       }
-    },
-    [binder, persistBinder]
-  );
+      setFetchingIds(prev => { const s = new Set(prev); s.delete(id); return s; });
+    }
+  }, []);
 
-  const deleteCard = useCallback(
-    (id) => {
-      persistBinder({
-        ...binder,
-        cards: binder.cards.filter((c) => c.id !== id),
-        last_updated: new Date().toISOString(),
-      });
-    },
-    [binder, persistBinder]
-  );
+  const deleteCard = useCallback(async (id) => {
+    await supabase.from('cards').delete().eq('id', id);
+    setBinder(prev => ({
+      ...prev,
+      cards: prev.cards.filter(c => c.id !== id),
+      last_updated: new Date().toISOString(),
+    }));
+  }, []);
 
-  return { binder, fetchingIds, addCard, updateCard, deleteCard };
+  return { binder, fetchingIds, loading, addCard, updateCard, deleteCard };
 }
