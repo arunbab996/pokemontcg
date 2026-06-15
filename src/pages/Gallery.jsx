@@ -133,23 +133,10 @@ export default function Gallery() {
         <footer style={{
           padding: '1.5rem 2rem',
           borderTop: '1px solid var(--border)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
         }}>
           <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
             Last updated {lastUpdated}
           </span>
-          <a
-            href="https://pokemontcg.io"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}
-            onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
-            onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
-          >
-            Pokémon TCG API
-          </a>
         </footer>
       </div>
     </div>
