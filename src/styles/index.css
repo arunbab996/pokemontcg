@@ -189,25 +189,29 @@ body {
   right: 0;
   bottom: -2px;
   transform: translateY(100%);
-  padding: 0.55rem 0.5rem 0.4rem;
+  padding: 0.5rem 0.4rem 0.3rem;
   opacity: 0;
   transition: opacity 0.2s ease, transform 0.2s ease;
   pointer-events: none;
 }
 .card-item:hover .card-tag {
   opacity: 1;
-  transform: translateY(calc(100% + 0px));
+  transform: translateY(100%);
 }
 .card-tag-name {
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--text-primary);
-  line-height: 1.3;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .card-tag-meta {
   font-size: 0.65rem;
   color: var(--text-muted);
-  margin-top: 0.1rem;
+  margin-top: 0.3rem;
   line-height: 1.4;
 }
 
