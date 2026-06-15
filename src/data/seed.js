@@ -1,5 +1,4 @@
-// Japanese sv2a and mep cards aren't in the English PTCG API.
-// We hardcode confirmed image URLs for those; others are fetched at runtime.
+// Images hardcoded for cards not in the English PTCG API (Japanese exclusives).
 export const SEED_CARDS = [
   {
     id: "sv2a-027",
@@ -10,7 +9,7 @@ export const SEED_CARDS = [
     display_number: "027/070",
     language: "Japanese",
     variant: "Illustration Rare",
-    image_url: "https://images.pokemontcg.io/sv3pt5/94_hires.png",
+    image_url: "https://storage.googleapis.com/images.pricecharting.com/124dc7ba96023633237fb953bc2d2f930493331110d15936fcd78900de7e5aed/1600.jpg",
     added_at: new Date().toISOString(),
   },
   {
@@ -46,7 +45,7 @@ export const SEED_CARDS = [
     display_number: "1/102",
     language: "English",
     variant: "Holo Rare",
-    image_url: "",
+    image_url: "https://storage.googleapis.com/images.pricecharting.com/372abf8075b7335c12bb7f2fed59cd6c77e298220738df781075d8141c2ea67b/1600.jpg",
     added_at: new Date().toISOString(),
   },
   {
@@ -58,7 +57,7 @@ export const SEED_CARDS = [
     display_number: "167",
     language: "English",
     variant: "Promo Full Art",
-    image_url: "",
+    image_url: "https://storage.googleapis.com/images.pricecharting.com/m2jvmru7tzqyellv/1600.jpg",
     added_at: new Date().toISOString(),
   },
   {
@@ -94,7 +93,7 @@ export const SEED_CARDS = [
     display_number: "023",
     language: "Japanese",
     variant: "Full Art Special",
-    image_url: "https://images.pokemontcg.io/me1/23_hires.png",
+    image_url: "https://storage.googleapis.com/images.pricecharting.com/v7di2q5lovmym62w/1600.jpg",
     added_at: new Date().toISOString(),
   },
 ];
