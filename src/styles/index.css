@@ -13,9 +13,9 @@
 }
 
 [data-theme="dark"] {
-  --cream: #141414;
-  --cream-dark: #1e1e1e;
-  --border: #2e2e2e;
+  --cream: #000000;
+  --cream-dark: #0d0d0d;
+  --border: #1e1e1e;
   --text-primary: #f0ede8;
   --text-secondary: #8a8a82;
   --text-muted: #555550;
