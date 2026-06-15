@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cream: #f4f1eb;
+  --cream-dark: #ede9e1;
+  --border: #ddd9d0;
+  --text-primary: #1c1c1c;
+  --text-secondary: #888880;
+  --text-muted: #b0aca3;
+  --accent: #1c1c1c;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background: var(--cream);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Layout ── */
+.binder-layout {
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  min-height: 100vh;
+}
+
+@media (max-width: 768px) {
+  .binder-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  border-right: 1px solid var(--border);
+  padding: 2rem 1.5rem 3rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: static;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 1.25rem 1rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+/* ── Card grid ── */
+.card-grid {
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1.5rem;
+  align-content: start;
+}
+
+@media (max-width: 768px) {
+  .card-grid {
+    padding: 1.25rem;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+
+/* ── Card cell ── */
+.card-item {
+  cursor: default;
+}
+
+.card-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
+  transition: transform 0.2s cubic-bezier(0.23,1,0.32,1),
+              box-shadow 0.2s cubic-bezier(0.23,1,0.32,1);
+}
+
+.card-item:hover img {
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18), 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card-placeholder {
+  width: 100%;
+  aspect-ratio: 63 / 88;
+  border-radius: 8px;
+  background: var(--cream-dark);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Shimmer ── */
+.shimmer {
+  background: linear-gradient(
+    105deg,
+    var(--cream-dark) 0%,
+    #e8e4dc 45%,
+    #edeae3 50%,
+    #e8e4dc 55%,
+    var(--cream-dark) 100%
+  );
+  background-size: 300% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  border-radius: 8px;
+}
+@keyframes shimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* ── Sidebar nav ── */
+.nav-link {
+  display: block;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  transition: color 0.15s;
+}
+.nav-link:hover { color: var(--text-primary); }
+.nav-link.active { color: var(--text-primary); font-weight: 600; }
+
+.nav-section-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+  margin-top: 1.5rem;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.25rem 0;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
