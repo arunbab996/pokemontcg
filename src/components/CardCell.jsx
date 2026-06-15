@@ -18,11 +18,7 @@ export default function CardCell({ card, isFetching }) {
     return (
       <div className="card-item">
         <div className="card-placeholder">
-          <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-            <circle cx="16" cy="16" r="12" stroke="#c8c4bc" strokeWidth="2"/>
-            <circle cx="16" cy="16" r="4" fill="#c8c4bc"/>
-            <line x1="4" y1="16" x2="28" y2="16" stroke="#c8c4bc" strokeWidth="2"/>
-          </svg>
+          <img src="/cardback.jpg" alt="Card back" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
         </div>
       </div>
     );
@@ -30,13 +26,17 @@ export default function CardCell({ card, isFetching }) {
 
   return (
     <>
-      <div className="card-item" style={{ cursor: 'pointer' }} onClick={() => setOpen(true)}>
+      <div className="card-item" style={{ cursor: 'pointer', position: 'relative' }} onClick={() => setOpen(true)}>
         <img
           src={card.image_url}
           alt={card.name}
           loading="lazy"
           onError={() => setImgError(true)}
         />
+        <div className="card-tag">
+          <div className="card-tag-name">{card.name}</div>
+          <div className="card-tag-meta">{card.set_name} · {card.variant}</div>
+        </div>
       </div>
       {open && <CardModal card={card} onClose={() => setOpen(false)} />}
     </>
