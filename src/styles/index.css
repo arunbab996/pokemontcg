@@ -187,31 +187,27 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -2px;
-  transform: translateY(100%);
-  padding: 0.5rem 0.4rem 0.3rem;
+  bottom: 0;
+  border-radius: 0 0 8px 8px;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.65) 35%, rgba(0,0,0,0.85) 100%);
+  padding: 2.5rem 0.65rem 0.65rem;
   opacity: 0;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.2s ease;
   pointer-events: none;
 }
 .card-item:hover .card-tag {
   opacity: 1;
-  transform: translateY(100%);
 }
 .card-tag-name {
   font-size: 0.72rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #fff;
   line-height: 1.35;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 .card-tag-meta {
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  margin-top: 0.3rem;
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.65);
+  margin-top: 0.2rem;
   line-height: 1.4;
 }
 
