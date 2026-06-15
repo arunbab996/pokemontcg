@@ -33,7 +33,7 @@ export const SEED_CARDS = [
     display_number: "8/82",
     language: "English",
     variant: "Holo Rare",
-    image_url: "",
+    image_url: "https://images.pokemontcg.io/base5/8_hires.png",
     added_at: new Date().toISOString(),
   },
   {
@@ -81,7 +81,7 @@ export const SEED_CARDS = [
     display_number: "37/82",
     language: "English",
     variant: "Non-Holo",
-    image_url: "",
+    image_url: "https://images.pokemontcg.io/base5/37_hires.png",
     added_at: new Date().toISOString(),
   },
   {

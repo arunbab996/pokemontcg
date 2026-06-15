@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { SEED_CARDS } from '../data/seed';
 
-const STORAGE_KEY = 'binder_v5';
+const STORAGE_KEY = 'binder_v6';
 const PTCG_BASE = 'https://api.pokemontcg.io/v2/cards';
 
 async function fetchCardImage(card) {

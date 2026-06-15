@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import CardModal from './CardModal';
 
 export default function CardCell({ card, isFetching }) {
   const [imgError, setImgError] = useState(false);
+  const [open, setOpen] = useState(false);
+  const hasImage = card.image_url && !imgError;
 
   if (isFetching) {
     return (
@@ -11,7 +14,7 @@ export default function CardCell({ card, isFetching }) {
     );
   }
 
-  if (!card.image_url || imgError) {
+  if (!hasImage) {
     return (
       <div className="card-item">
         <div className="card-placeholder">
@@ -26,13 +29,16 @@ export default function CardCell({ card, isFetching }) {
   }
 
   return (
-    <div className="card-item">
-      <img
-        src={card.image_url}
-        alt={card.name}
-        loading="lazy"
-        onError={() => setImgError(true)}
-      />
-    </div>
+    <>
+      <div className="card-item" style={{ cursor: 'pointer' }} onClick={() => setOpen(true)}>
+        <img
+          src={card.image_url}
+          alt={card.name}
+          loading="lazy"
+          onError={() => setImgError(true)}
+        />
+      </div>
+      {open && <CardModal card={card} onClose={() => setOpen(false)} />}
+    </>
   );
 }
