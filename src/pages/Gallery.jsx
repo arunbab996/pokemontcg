@@ -70,7 +70,7 @@ export default function Gallery() {
       {/* ── Sidebar ── */}
       <aside className="sidebar">
         <div>
-          <p style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.3 }}>
+          <p style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.2, letterSpacing: '-0.02em' }}>
             The Vault
           </p>
         </div>
@@ -107,7 +107,8 @@ export default function Gallery() {
         <div style={{ flex: 1 }} />
 
         <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          <button className="theme-toggle" onClick={() => setDark(d => !d)}>
+          <button className="theme-toggle" data-on={dark ? 'true' : 'false'} onClick={() => setDark(d => !d)}>
+            <span className="toggle-track"><span className="toggle-thumb" /></span>
             {dark ? 'Light' : 'Dark'}
           </button>
           <Link
