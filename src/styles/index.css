@@ -12,6 +12,16 @@
   --accent: #1c1c1c;
 }
 
+[data-theme="dark"] {
+  --cream: #141414;
+  --cream-dark: #1c1c1c;
+  --border: #2a2a2a;
+  --text-primary: #e8e6e1;
+  --text-secondary: #6b6b65;
+  --text-muted: #444440;
+  --accent: #e8e6e1;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body, #root {
@@ -260,6 +270,23 @@ body {
 @keyframes card-drop {
   from { opacity: 1; transform: scale(1) translateY(0); }
   to   { opacity: 0; transform: scale(0.9) translateY(16px); }
+}
+
+/* ── Dark mode toggle ── */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  letter-spacing: 0.04em;
+}
+.theme-toggle:hover {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
 }
 
 /* ── Scrollbar ── */

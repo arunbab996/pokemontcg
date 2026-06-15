@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCollection } from '../hooks/useCollection';
 import CardCell from '../components/CardCell';
@@ -34,6 +34,12 @@ function sortCards(cards) {
 export default function Gallery() {
   const { binder, fetchingIds } = useCollection();
   const [activeSet, setActiveSet] = useState('All');
+  const [dark, setDark] = useState(() => localStorage.getItem('vault_theme') === 'dark');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('vault_theme', dark ? 'dark' : 'light');
+  }, [dark]);
 
   const setGroups = useMemo(() => {
     const counts = {};
@@ -65,7 +71,7 @@ export default function Gallery() {
       <aside className="sidebar">
         <div>
           <p style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.3 }}>
-            Arun's Binder
+            The Vault
           </p>
         </div>
 
@@ -100,7 +106,10 @@ export default function Gallery() {
         {/* Spacer pushes admin link to bottom */}
         <div style={{ flex: 1 }} />
 
-        <div style={{ marginTop: '2rem' }}>
+        <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <button className="theme-toggle" onClick={() => setDark(d => !d)}>
+            {dark ? 'Light' : 'Dark'}
+          </button>
           <Link
             to="/admin"
             style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}
