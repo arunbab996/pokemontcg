@@ -267,6 +267,26 @@ body {
   to   { opacity: 0; transform: scale(0.9) translateY(16px); }
 }
 
+/* ── Modal nav arrows ── */
+.modal-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 3rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 1rem;
+  transition: color 0.15s;
+  z-index: 101;
+  user-select: none;
+}
+.modal-nav:hover { color: rgba(255,255,255,0.95); }
+.modal-nav-prev { left: 1rem; }
+.modal-nav-next { right: 1rem; }
+
 /* ── Dark mode toggle ── */
 .theme-toggle {
   display: flex;

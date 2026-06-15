@@ -1,7 +1,8 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useCollection } from '../hooks/useCollection';
 import CardCell from '../components/CardCell';
+import CardModal from '../components/CardModal';
 
 const SET_ORDER = [
   'base1','base2','base3','base4','base5',
@@ -35,6 +36,7 @@ export default function Gallery() {
   const { binder, fetchingIds } = useCollection();
   const [activeSet, setActiveSet] = useState('All');
   const [dark, setDark] = useState(() => localStorage.getItem('vault_theme') === 'dark');
+  const [openIndex, setOpenIndex] = useState(null);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
@@ -59,6 +61,9 @@ export default function Gallery() {
       : binder.cards.filter(c => c.set_name === activeSet);
     return sortCards(cards);
   }, [binder.cards, activeSet]);
+
+  const openPrev = useCallback(() => setOpenIndex(i => (i > 0 ? i - 1 : i)), []);
+  const openNext = useCallback(() => setOpenIndex(i => (i < filteredCards.length - 1 ? i + 1 : i)), [filteredCards.length]);
 
   const lastUpdated = useMemo(() => {
     const d = new Date(binder.last_updated);
@@ -92,7 +97,7 @@ export default function Gallery() {
               className={`nav-link${activeSet === name ? ' active' : ''}`}
               onClick={() => setActiveSet(name)}
             >
-              {name}
+              {name} <span style={{ opacity: 0.45, fontWeight: 400 }}>· {count}</span>
             </button>
           ))}
         </div>
@@ -132,12 +137,21 @@ export default function Gallery() {
             </div>
           ) : (
             <div className="card-grid">
-              {filteredCards.map(card => (
-                <CardCell key={card.id} card={card} isFetching={fetchingIds.has(card.id)} />
+              {filteredCards.map((card, i) => (
+                <CardCell key={card.id} card={card} isFetching={fetchingIds.has(card.id)} onOpen={() => setOpenIndex(i)} />
               ))}
             </div>
           )}
         </main>
+
+        {openIndex !== null && filteredCards[openIndex]?.image_url && (
+          <CardModal
+            card={filteredCards[openIndex]}
+            onClose={() => setOpenIndex(null)}
+            onPrev={openIndex > 0 ? openPrev : null}
+            onNext={openIndex < filteredCards.length - 1 ? openNext : null}
+          />
+        )}
 
         {/* Footer */}
         <footer style={{
