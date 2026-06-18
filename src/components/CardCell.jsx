@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function CardCell({ card, isFetching, onOpen }) {
+export default function CardCell({ card, isFetching, onOpen, index = 0 }) {
   const [imgError, setImgError] = useState(false);
   const hasImage = card.image_url && !imgError;
 
@@ -22,8 +22,10 @@ export default function CardCell({ card, isFetching, onOpen }) {
     );
   }
 
+  const delay = `${Math.min(index * 40, 600)}ms`;
+
   return (
-    <div className="card-item" style={{ cursor: 'pointer', position: 'relative' }} onClick={onOpen}>
+    <div className="card-item card-enter" style={{ cursor: 'pointer', position: 'relative', animationDelay: delay }} onClick={onOpen}>
       <img
         src={card.image_url}
         alt={card.name}

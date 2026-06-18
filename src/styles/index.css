@@ -173,6 +173,16 @@ body {
   margin: 1.25rem 0;
 }
 
+/* ── Card enter animation ── */
+@keyframes card-enter {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.card-enter {
+  opacity: 0;
+  animation: card-enter 0.35s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
 /* ── Blur siblings on hover ── */
 .card-grid:has(.card-item:hover) .card-item:not(:hover) {
   filter: blur(1.5px);

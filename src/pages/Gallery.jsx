@@ -33,7 +33,7 @@ function sortCards(cards) {
 }
 
 export default function Gallery() {
-  const { binder, fetchingIds } = useCollection();
+  const { binder, fetchingIds, loading } = useCollection();
   const [activeSet, setActiveSet] = useState('All');
   const [dark, setDark] = useState(() => localStorage.getItem('vault_theme') === 'dark');
   const [openIndex, setOpenIndex] = useState(null);
@@ -131,14 +131,22 @@ export default function Gallery() {
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         {/* Card grid */}
         <main style={{ flex: 1 }}>
-          {filteredCards.length === 0 ? (
+          {loading ? (
+            <div className="card-grid">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <div key={i} className="card-item">
+                  <div className="shimmer" style={{ aspectRatio: '63/88' }} />
+                </div>
+              ))}
+            </div>
+          ) : filteredCards.length === 0 ? (
             <div style={{ padding: '4rem 2rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
               No cards yet. <Link to="/admin" style={{ textDecoration: 'underline' }}>Add your first card →</Link>
             </div>
           ) : (
             <div className="card-grid">
               {filteredCards.map((card, i) => (
-                <CardCell key={card.id} card={card} isFetching={fetchingIds.has(card.id)} onOpen={() => setOpenIndex(i)} />
+                <CardCell key={card.id} card={card} isFetching={fetchingIds.has(card.id)} onOpen={() => setOpenIndex(i)} index={i} />
               ))}
             </div>
           )}
