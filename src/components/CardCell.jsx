@@ -3,6 +3,7 @@ import { useState } from 'react';
 export default function CardCell({ card, isFetching, onOpen, index = 0, reveal = false }) {
   const [imageReady, setImageReady] = useState(false);
   const flipped = reveal && imageReady;
+  const cardBack = card.language === 'Japanese' ? '/cardback-jp.jpg' : '/cardback.jpg';
   const flipDelay = `${Math.min(index * 50, 1000)}ms`;
   const enterDelay = `${Math.min(index * 30, 400)}ms`;
 
@@ -15,7 +16,7 @@ export default function CardCell({ card, isFetching, onOpen, index = 0, reveal =
       <div className={`card-flip${flipped ? ' card-flip--flipped' : ''}`} style={{ '--flip-delay': flipDelay }}>
         <div className="card-flip-inner">
           <div className="card-back-face">
-            <img src="/cardback.jpg" alt="Card back" />
+            <img src={cardBack} alt="Card back" />
           </div>
           <div className="card-front-face">
             {card.image_url && !isFetching && (
