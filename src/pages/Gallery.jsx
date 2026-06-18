@@ -37,11 +37,19 @@ export default function Gallery() {
   const [activeSet, setActiveSet] = useState('All');
   const [dark, setDark] = useState(() => localStorage.getItem('vault_theme') !== 'light');
   const [openIndex, setOpenIndex] = useState(null);
+  const [reveal, setReveal] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
     localStorage.setItem('vault_theme', dark ? 'dark' : 'light');
   }, [dark]);
+
+  useEffect(() => {
+    if (!loading) {
+      const t = setTimeout(() => setReveal(true), 500);
+      return () => clearTimeout(t);
+    }
+  }, [loading]);
 
   const setGroups = useMemo(() => {
     const counts = {};
@@ -138,7 +146,7 @@ export default function Gallery() {
           ) : (
             <div className="card-grid">
               {filteredCards.map((card, i) => (
-                <CardCell key={card.id} card={card} isFetching={fetchingIds.has(card.id)} onOpen={() => setOpenIndex(i)} index={i} />
+                <CardCell key={card.id} card={card} isFetching={fetchingIds.has(card.id)} onOpen={() => setOpenIndex(i)} index={i} reveal={reveal} />
               ))}
             </div>
           )}
