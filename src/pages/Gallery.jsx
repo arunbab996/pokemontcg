@@ -131,15 +131,7 @@ export default function Gallery() {
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         {/* Card grid */}
         <main style={{ flex: 1 }}>
-          {loading ? (
-            <div className="card-grid">
-              {Array.from({ length: 12 }).map((_, i) => (
-                <div key={i} className="card-item">
-                  <img src="/cardback.jpg" alt="" style={{ width: '100%', borderRadius: '8px', display: 'block', boxShadow: '0 2px 6px rgba(0,0,0,0.2)' }} />
-                </div>
-              ))}
-            </div>
-          ) : filteredCards.length === 0 ? (
+          {!loading && filteredCards.length === 0 ? (
             <div style={{ padding: '4rem 2rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
               No cards yet. <Link to="/admin" style={{ textDecoration: 'underline' }}>Add your first card →</Link>
             </div>
