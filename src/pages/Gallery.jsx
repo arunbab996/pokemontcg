@@ -35,7 +35,7 @@ function sortCards(cards) {
 export default function Gallery() {
   const { binder, fetchingIds, loading } = useCollection();
   const [activeSet, setActiveSet] = useState('All');
-  const [dark, setDark] = useState(() => localStorage.getItem('vault_theme') === 'dark');
+  const [dark, setDark] = useState(() => localStorage.getItem('vault_theme') !== 'light');
   const [openIndex, setOpenIndex] = useState(null);
 
   useEffect(() => {
@@ -135,7 +135,7 @@ export default function Gallery() {
             <div className="card-grid">
               {Array.from({ length: 12 }).map((_, i) => (
                 <div key={i} className="card-item">
-                  <div className="shimmer" style={{ aspectRatio: '63/88' }} />
+                  <img src="/cardback.jpg" alt="" style={{ width: '100%', borderRadius: '8px', display: 'block', boxShadow: '0 2px 6px rgba(0,0,0,0.2)' }} />
                 </div>
               ))}
             </div>
